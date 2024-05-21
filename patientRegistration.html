@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Patient Registration</title>
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #fff;
+    color: rgb(130, 106, 251);
+  }
+
+  header {
+    background: linear-gradient(-135deg, #c850c0, #4158d0);
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  header h1 {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .container {
+    position: relative;
+    max-width: 1200px;
+    width: 100%;
+    background: rgb(130, 106, 251);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 120px; /* Adjusted to fit under the fixed header */
+  }
+
+  .container header {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .container .form {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .form .input-box {
+    width: 100%;
+  }
+
+  .input-box label {
+    color: #fff;
+  }
+
+  .form .input-box input,
+  .select-box select {
+    height: 50px;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    color: #000;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+    background: #fff;
+  }
+
+  .input-box input:focus,
+  .select-box select:focus {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .gender-box {
+    grid-column: span 2;
+    margin-top: 20px;
+  }
+
+  .gender-box h3 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .gender-option {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .gender {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .gender input {
+    accent-color: rgb(130, 106, 251);
+  }
+
+  .gender label {
+    color: #fff;
+  }
+
+  .address .input-box {
+    grid-column: span 2;
+  }
+
+  .form button {
+    height: 55px;
+    width: 100%;
+    color: rgb(130, 106, 251);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+    grid-column: span 2;
+  }
+
+  .form button:hover {
+    background: rgb(88, 56, 250);
+    color: #fff;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .form {
+      grid-template-columns: 1fr;
+    }
+
+    .gender-option {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>MEDICHUB</h1>
+</header>
+
+<section class="container">
+  <form action="mainPageForm.html" class="form" onsubmit="return redirect()">
+    <div class="input-box">
+      <label>Full Name</label>
+      <input type="text" placeholder="Enter full name" required />
+    </div>
+
+    <div class="input-box">
+      <label>Email Address</label>
+      <input type="email" placeholder="Enter email address" required />
+    </div>
+
+    <div class="input-box">
+      <label>Phone Number</label>
+      <input type="tel" placeholder="Enter phone number" required />
+    </div>
+
+    <div class="input-box">
+      <label>Birth Date</label>
+      <input type="date" required />
+    </div>
+
+    <div class="input-box">
+      <label>Password</label>
+      <input type="password" placeholder="Enter password" required />
+    </div>
+
+    <div class="input-box">
+      <label>Confirm Password</label>
+      <input type="password" placeholder="Confirm password" required />
+    </div>
+
+    <div class="gender-box">
+      <h3>Gender</h3>
+      <div class="gender-option">
+        <div class="gender">
+          <input type="radio" id="check-male" name="gender" checked />
+          <label for="check-male">Male</label>
+        </div>
+        <div class="gender">
+          <input type="radio" id="check-female" name="gender" />
+          <label for="check-female">Female</label>
+        </div>
+        
+      </div>
+    </div>
+
+    
+
+    <button type="submit">Submit</button>
+  </form>
+</section>
+
+<script>
+  function redirect() {
+    window.location.href = "mainPageForm.html";
+    return false;
+  }
+</script>
+
+</body>
+</html>
