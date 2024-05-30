@@ -235,59 +235,79 @@
       </style>
    </head>
    <body>
-      <header>
-         <h1>Welcome to MedicHub</h1>
-         <nav>
+    <header>
+        <h1>Welcome to MedicHub</h1>
+        <nav>
             <ul>
-               <li><a href="homePage.html">Home</a></li>
-
+                <li><a href="homePage.html">Home</a></li>
             </ul>
-         </nav>
-      </header>
+        </nav>
+    </header>
 
-      <div class="wrapper">
-    <div class="title">
-        Login
+    <div class="wrapper">
+        <div class="title">Login</div>
+        <form id="loginForm" class="form-horizontal" autocomplete="off" method="post" accept-charset="utf-8" onsubmit="return validateAndRedirect()">
+            <div style="display:none;">
+                <input type="hidden" name="_method" value="POST"/>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="role" id="staffCheckbox" value="staff" required="required">
+                <label class="form-check-label">Staff</label>
+                <input class="form-check-input" type="radio" name="role" id="patientCheckbox" value="patient" required="required">
+                <label class="form-check-label">Patient</label>
+            </div>
+            <div class="horizontal-line"></div>
+            <div class="field">
+                <input type="text" name="username" id="username" required>
+                <label>User ID</label>
+            </div>
+            <div class="field">
+                <input type="password" name="password" required>
+                <label>Password</label>
+            </div>
+            <div class="content">
+                <div class="checkbox">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <div class="pass-link">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            <div class="field">
+                <input type="submit" value="Login">
+            </div>
+            <div class="signup-link">
+                Not a member? <a href="patientRegistration.html">Signup now</a>
+            </div>
+        </form>
     </div>
-    <form action="login.php" class="form-horizontal" id="medclinic" autocomplete="off" method="post" accept-charset="utf-8">
-        <div style="display:none;">
-            <input type="hidden" name="_method" value="POST"/>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="data[User][role]" id="staffCheckbox" value="2" required="required">
-            <label class="form-check-label">
-                Staff
-            </label>
-            <input class="form-check-input" type="radio" name="data[User][role]" id="patientCheckbox" value="1" required="required">
-            <label class="form-check-label">
-                Patient
-            </label>
-        </div>
-        <div class="horizontal-line"></div>
-        <div class="field">
-            <input type="text" name="username" required>
-            <label>Email Address</label>
-        </div>
-        <div class="field">
-            <input type="password" name="password" required>
-            <label>Password</label>
-        </div>
-        <div class="content">
-            <div class="checkbox">
-                <input type="checkbox" id="remember-me">
-                <label for="remember-me">Remember me</label>
-            </div>
-            <div class="pass-link">
-                <a href="#">Forgot password?</a>
-            </div>
-        </div>
-        <div class="field">
-            <input type="submit" value="Login">
-        </div>
-        <div class="signup-link">
-            Not a member? <a href="patientRegistration.html">Signup now</a>
-        </div>
-    </form>
-</div>
+
+    <script>
+        function validateAndRedirect() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            const username = document.getElementById('username').value;
+
+            if (role === 'staff') {
+                if (username.startsWith('ADM')) {
+                    window.location.href = 'homePageAdmin.php';
+                } else if (username.startsWith('D')) {
+                    window.location.href = 'homePageStaff.php';
+                } else {
+                    alert('Staff ID should start with ADM or D.');
+                    return false;
+                }
+            } else if (role === 'patient') {
+                if (username.startsWith('P')) {
+                    window.location.href = 'patientDashboard.php';
+                } else {
+                    alert('Patient ID should start with P.');
+                    return false;
+                }
+            }
+
+            return false; // Prevent form submission since we're handling redirection via JavaScript
+        }
+    </script>
 </body>
 </html>
