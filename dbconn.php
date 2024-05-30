@@ -3,7 +3,7 @@
 	$user = "root"; 			//mysqlusername
 	$pass = ""; 				//mysqlpassword
 	$host = "localhost"; 		//server name or ipaddress //127.0.0.1
-	$dbname = "medclinic"; 	//your db name
+	$dbname = "zclinicdbtest"; 	//your db name
 
 	try {
     	$pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
