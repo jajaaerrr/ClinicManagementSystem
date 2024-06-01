@@ -167,9 +167,9 @@
         <nav>
             <ul>
                 <li><a href="xxxxxx" class="nav-button" id="left-button"><img src="https://cdn-icons-png.flaticon.com/128/93/93634.png" alt="Left"></a></li>
-                <li><a href="#" id="about-us-link">About Us</a></li>
-                <li><a href="#" id="services-link">Services</a></li>
-                <li><a href="#" id="contact-link">Contact</a></li>
+                <li><a href="homePage.html" id="about-us-link">About Us</a></li>
+                <li><a href="homePage.html" id="services-link">Services</a></li>
+                <li><a href="homePage.html" id="contact-link">Contact</a></li>
                 <li><a href="xxxxxxx" class="nav-button" id="right-button"><img src="https://cdn-icons-png.flaticon.com/128/1250/1250699.png" alt="Right"></a></li>
             </ul>
         </nav>
@@ -183,13 +183,45 @@
         </div>
         <div class="main-content">
             <div class="top-buttons">
-                <button>MY PROFILE</button>
+                <button id="profileButton">MY PROFILE</button>
                 <button>APPOINTMENT</button>
-                <button>LOG OUT</button>
+                <button id="logoutButton">LOG OUT</button>
             </div>
             <img src="https://i.pinimg.com/564x/ad/74/57/ad745792a51ec9e39f90111739406f81.jpg" alt="Profile Picture">
-            <h2>WELCOME DR. JOSHUA!</h2>
+            <h2>WELCOME DR!</h2>
         </div>
     </div>
+<script>
+        console.log("JavaScript is executing!");
+
+        // Check if username exists in session
+        var username = "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>";
+        
+        // If username doesn't exist, redirect to login page
+        if (username === '') {
+            window.location.href = "mainPageForm.html";
+        }
+
+        // Add event listeners after DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add an event listener to the profile button
+            document.getElementById("profileButton").addEventListener("click", function() {
+                // Redirect to profile page using patientID from session
+                window.location.href = "profile.php";
+            });
+
+            // Add an event listener to the logout button
+            document.getElementById("logoutButton").addEventListener("click", function() {
+                // Display a confirmation dialog
+                var confirmLogout = confirm("Are you sure you want to log out?");
+                
+                // If user confirms logout
+                if (confirmLogout) {
+                    // Redirect to logout page
+                    window.location.href = "logout.php";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
