@@ -17,12 +17,21 @@
         body {
             background-color: #f2f2f2;
             color: #262626;
+            scroll-behavior: smooth;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         header {
@@ -30,6 +39,9 @@
             color: #fff;
             padding: 20px 0;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         header h1 {
@@ -88,17 +100,43 @@
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
+            text-align: center;
         }
 
         .clinic-info h2 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: #4158d0;
         }
 
         .clinic-info p {
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1.6;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .clinic-info .highlight {
+            color: #c850c0;
+            font-weight: 600;
+        }
+
+        .clinic-info .vision-mission {
+            margin-top: 20px;
+        }
+
+        .clinic-info .vision-mission h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4158d0;
+            margin-bottom: 10px;
+        }
+
+        .clinic-info .vision-mission p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
         }
 
         .btn-container {
@@ -138,29 +176,45 @@
         <h1>Welcome to MedicHub</h1>
         <nav>
             <ul>
-                <li><a href="#" id="about-us-link">About Us</a></li>
-                <li><a href="#" id="services-link">Services</a></li>
-                <li><a href="#" id="contact-link">Contact</a></li>
+                <li><a href="#about-us">About Us</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
                 <li><a href="mainPageForm.html" class="login-btn"><i class="fas fa-sign-in-alt"></i></a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="container">
-        <div id="about-us" class="clinic-info">
+    <div class="container" id="about-us">
+        <div class="clinic-info">
             <h2>About Our Clinic</h2>
-            <p>Welcome to MedicHub, your trusted partner in innovative clinic management solutions. We are revolutionizing the healthcare industry with our state-of-the-art systems designed to streamline clinic operations and ehnance 
-
+            <p>Welcome to <span class="highlight">MedicHub</span>, your premier destination for top-notch healthcare services. We are dedicated to providing <span class="highlight">compassionate care</span> and cutting-edge medical solutions. At MedicHub, our mission is to <span class="highlight">enhance your well-being</span> with personalized treatment plans and a team of experienced professionals. Join us in our journey to a healthier future!</p>
+            <div class="vision-mission">
+                <h3>Our Vision</h3>
+                <p>To be the leading healthcare provider, recognized for our commitment to excellence, innovation, and compassionate care.</p>
+                <h3>Our Mission</h3>
+                <p>To provide high-quality, patient-centered care through advanced medical practices, continuous improvement, and a dedicated team of professionals focused on the well-being of our community.</p>
+            </div>
         </div>
+    </div>
 
-        <div id="services" class="clinic-info" style="display: none;">
+    <div class="container" id="services" style="display: none;">
+        <div class="clinic-info">
             <h2>Our Services</h2>
-            <p>Service 1: Lorem ipsum dolor sit amet...</p>
+            <p><b>General Health Screening</b></p>
             <img src="https://www.makatimed.net.ph/wp-content/uploads/2021/06/6-BENEFITS-1.jpg" alt="Service 1" class="service-img">
-            <p>Service 2: Consectetur adipiscing elit...</p>
+            <p><b>Vaccinations</b></p>
+            <img src="https://richlandhealth.org/wp-content/uploads/2018/02/a-vaccination-to-a-child-PPQN4N4-1080x675.jpg" alt="Service 2" class="service-img">
+            <p><b>Pediatric Care</b></p>
+            <img src="https://www.nimaiborneo.com/images/pediatric-department.png" alt="Service 3" class="service-img">
+            <p><b>Laboratory Services<b></p>
+            <img src="https://mattapanchc.org/images/Demo/blog/lab_services.jpg" alt="Service 4" class="service-img">
+            <p><b>Physiotherapy</b></p>
+            <img src="https://www.care2curephysiotherapy.com/wp-content/uploads/2019/09/physiotherapy_techniques.jpg" alt="Service 5" class="service-img">
         </div>
+    </div>
 
-        <div id="contact" class="clinic-info" style="display: none;">
+    <div class="container" id="contact" style="display: none;">
+        <div class="clinic-info">
             <h2>Contact Us</h2>
             <p>Phone: 123-456-789</p>
             <p>Email: info@medichub.com</p>
@@ -174,9 +228,9 @@
             var servicesSection = document.getElementById("services");
             var contactSection = document.getElementById("contact");
 
-            var aboutUsLink = document.getElementById("about-us-link");
-            var servicesLink = document.getElementById("services-link");
-            var contactLink = document.getElementById("contact-link");
+            var aboutUsLink = document.querySelector("a[href='#about-us']");
+            var servicesLink = document.querySelector("a[href='#services']");
+            var contactLink = document.querySelector("a[href='#contact']");
 
             // Function to hide all content sections
             function hideAllSections() {
@@ -194,18 +248,35 @@
                 event.preventDefault();
                 hideAllSections();
                 aboutUsSection.style.display = "block";
+                document.getElementById("about-us").scrollIntoView();
             });
 
             servicesLink.addEventListener("click", function(event) {
                 event.preventDefault();
                 hideAllSections();
                 servicesSection.style.display = "block";
+                document.getElementById("services").scrollIntoView();
             });
 
             contactLink.addEventListener("click", function(event) {
                 event.preventDefault();
                 hideAllSections();
                 contactSection.style.display = "block";
+                document.getElementById("contact").scrollIntoView();
+            });
+
+            // Intersection Observer to add the visible class
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            var containers = document.querySelectorAll('.container');
+            containers.forEach(function(container) {
+                observer.observe(container);
             });
         });
     </script>
