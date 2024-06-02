@@ -3,9 +3,9 @@ include 'dbconn.php'; // Ensure this file exists and the path is correct
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $patientNRIC = $_POST['patientNRIC'];
-    $patientName = $_POST['fullName']; 
-    $patientPhoneNo = $_POST['phoneNumber']; 
-    $patientAddress = $_POST['address']; 
+    $patientName = $_POST['fullName']; // Corrected name
+    $patientPhoneNo = $_POST['phoneNumber']; // Corrected name
+    $patientAddress = $_POST['address']; // Corrected name
     $userPassword = $_POST['password'];
 
     // Hash the password
