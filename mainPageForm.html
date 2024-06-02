@@ -246,7 +246,7 @@
 
     <div class="wrapper">
         <div class="title">Login</div>
-        <form id="loginForm" class="form-horizontal" autocomplete="off" method="post" accept-charset="utf-8" onsubmit="return validateAndRedirect()">
+        <form action = "login.php" class="form-horizontal"  method="POST" accept-charset="utf-8" onsubmit="return validateAndRedirect()">
             <div style="display:none;">
                 <input type="hidden" name="_method" value="POST"/>
             </div>
@@ -258,7 +258,7 @@
             </div>
             <div class="horizontal-line"></div>
             <div class="field">
-                <input type="text" name="username" id="username" required>
+                <input type="text" name="userID" id="userID" required>
                 <label>User ID</label>
             </div>
             <div class="field">
@@ -286,20 +286,20 @@
     <script>
         function validateAndRedirect() {
             const role = document.querySelector('input[name="role"]:checked').value;
-            const username = document.getElementById('username').value;
+            const userID = document.getElementById('userID').value;
 
             if (role === 'staff') {
-                if (username.startsWith('ADM')) {
-                    window.location.href = 'homePageAdmin.php';
-                } else if (username.startsWith('D')) {
-                    window.location.href = 'homePageStaff.php';
+                if (userID.startsWith('ADM')) {
+                    window.location.href = 'homePageAdmin.html?userType=admin&userID = ' + userID;
+                } else if (userID.startsWith('D')) {
+                    window.location.href = 'homePageStaff.html?userType=doctor&userID= ' + userID;
                 } else {
                     alert('Staff ID should start with ADM or D.');
                     return false;
                 }
             } else if (role === 'patient') {
-                if (username.startsWith('P')) {
-                    window.location.href = 'patientDashboard.php';
+                if (userID.startsWith('P')) {
+                    window.location.href = 'patientDashboard.html?userType=patient&userID= ' + userID;
                 } else {
                     alert('Patient ID should start with P.');
                     return false;
