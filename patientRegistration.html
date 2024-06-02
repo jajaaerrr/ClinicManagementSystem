@@ -180,7 +180,7 @@
 </header>
 
 <section class="container">
-<form action="registerPat.php" method="POST" class="form" onsubmit="return showMessage()">
+<form action="registerPat.php" method="POST" class="form" novalidate>
     <div class="input-box">
       <label>Patient NRIC</label>
       <input type="text" name="patientNRIC" placeholder="Enter NRIC" required />
@@ -216,14 +216,34 @@
     </div>
 
     <div class="input-box">
-      <button type="submit">Submit</button>
+      <button type="submit" onclick="return validateForm()">Submit</button>
     </div>
 </form>
 </section>
 
 <script>
-  function showMessage() {
-    alert('YOUR PATIENT ID: ' + localStorage.getItem('patientID') + '. PLEASE USE THIS PATIENT ID TO LOG INTO THE SYSTEM.');
+  function validateForm() {
+    const form = document.querySelector('form');
+    const fields = form.querySelectorAll('input[required]');
+    let allFilled = true;
+
+    fields.forEach(field => {
+      if (!field.value.trim()) {
+        allFilled = false;
+        field.reportValidity();
+      }
+    });
+
+    if (!allFilled) {
+      return false;
+    }
+
+    const patientID = localStorage.getItem('patientID');
+    if (patientID) {
+      alert('YOUR PATIENT ID: ' + patientID + '. PLEASE USE THIS PATIENT ID TO LOG INTO THE SYSTEM.');
+      localStorage.removeItem('patientID');
+    }
+
     return true;
   }
 </script>
