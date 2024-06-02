@@ -181,7 +181,7 @@
         </div>
          <div class="main-content">
             <div class="top-buttons">
-                <button id = "profileButton">MY PROFILE</button>
+                <button id = "addDoc">REGISTER NEW DOCTOR</button>
                 <button>APPOINTMENT</button>
                 <button id = "logoutButton">LOG OUT</button>
             </div>
@@ -190,21 +190,17 @@
         </div>
     </div>
     <script>
-        // Check if username exists in session
-        var username = "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>";
+        // Check if userID exists in session
+        var userID = "<?php echo $_SESSION['userID']; ?>";
+		var userType = "<?php echo $_SESSION['userType']; ?>";
         
-        // If username doesn't exist, redirect to login page
-        if (username === '') {
+        // If userID doesn't exist, redirect to login page
+        if (userID === '') {
             window.location.href = "mainPageForm.html";
         }
 
         // Add event listeners after DOM content is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Add an event listener to the profile button
-            document.getElementById("profileButton").addEventListener("click", function() {
-                // Redirect to profile page
-                window.location.href = "profile.php";
-            });
 
             // Add an event listener to the logout button
             document.getElementById("logoutButton").addEventListener("click", function() {
