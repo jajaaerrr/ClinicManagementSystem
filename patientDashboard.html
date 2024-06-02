@@ -170,7 +170,7 @@
                 <li><a href="homePage.html" id="about-us-link">About Us</a></li>
                 <li><a href="homePage.html" id="services-link">Services</a></li>
                 <li><a href="homePage.html" id="contact-link">Contact</a></li>
-                <li><a href="#" class="nav-button" id="right-button"><img src="https://cdn-icons-png.flaticon.com/128/1250/1250699.png" alt="Right"></a></li>
+                <li><a href="#" class="nav-button" id="right-button"><img src="https://www.flaticon.com/free-icon/next_318275?term=next&page=1&position=2&origin=search&related_id=318275" alt="Right"></a></li>
             </ul>
         </nav>
     </header>
@@ -192,13 +192,12 @@
         </div>
     </div>
 <script>
-        console.log("JavaScript is executing!");
-
-        // Check if patientID exists in session
-        var patientID = "<?php echo isset($_SESSION['patientID']) ? $_SESSION['patientID'] : ''; ?>";
+        // Check if userID in session
+        var userID = "<?php echo $_SESSION['userID']; ?>";
+		var userType = "<?php echo $_SESSION['userType']; ?>";
         
-        // If patientID doesn't exist, redirect to login page
-        if (patientID === '') {
+        // If userID doesn't exist, redirect to login page
+        if (userID === '') {
             window.location.href = "mainPageForm.html";
         }
 
@@ -207,7 +206,7 @@
             // Add an event listener to the profile button
             document.getElementById("profileButton").addEventListener("click", function() {
                 // Redirect to profile page using patientID from session
-                window.location.href = "profile.php?patientID=" + patientID;
+                window.location.href = "profile.php?userType=patient&userID= " + userID;
             });
 
             // Add an event listener to the logout button
