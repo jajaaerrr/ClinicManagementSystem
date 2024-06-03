@@ -1,5 +1,6 @@
 <?php
 session_start();
+var_dump($_SESSION);
 include 'dbconn.php'; // Include database connection file
 
 // Get username and password from form
@@ -40,12 +41,12 @@ if ($stmt->rowCount() == 1) {
     // Redirect based on user type
     if ($role === 'staff') {
         if (isset($_SESSION['adminID'])) {
-            header("Location: homePageAdmin.html"); // Redirect to admin dashboard
+            header("Location: homePageAdmin.html?userType=admin&adminID=" + adminID); // Redirect to admin dashboard
         } elseif (isset($_SESSION['doctorID'])) {
-            header("Location: homePageStaff.html"); // Redirect to staff dashboard
+            header("Location: homePageStaff.html?userType=doctor&doctorID=" + doctorID); // Redirect to staff dashboard
         }
     } else {
-        header("Location: patientDashboard.html"); // Redirect to patient dashboard
+        header("Location: patientDashboard.html?userType=patient&patientID= " + patientID); // Redirect to patient dashboard
     }
 } else {
     // User does not exist, redirect to login page with error message
