@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to MedicHub</title>
+    <title>MedicHub | Admin</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
@@ -166,11 +166,11 @@
         <h1>MEDICHUB</h1>
         <nav>
             <ul>
-                <li><a href="xxxxxx" class="nav-button" id="left-button"><img src="https://cdn-icons-png.flaticon.com/128/93/93634.png" alt="Left"></a></li>
+                <li><a href="xxxxxx" class="nav-button" id="left-button"><img src="https://uxwing.com/wp-content/themes/uxwing/download/arrow-direction/previous-icon.png" alt="Left"></a></li>
                 <li><a href="homePage.html" id="about-us-link">About Us</a></li>
                 <li><a href="homePage.html" id="services-link">Services</a></li>
                 <li><a href="homePage.html" id="contact-link">Contact</a></li>
-                <li><a href="xxxxxxx" class="nav-button" id="right-button"><img src="https://cdn-icons-png.flaticon.com/128/1250/1250699.png" alt="Right"></a></li>
+                <li><a href="xxxxxxx" class="nav-button" id="right-button"><img src="https://uxwing.com/wp-content/themes/uxwing/download/arrow-direction/next-icon.png" alt="Right"></a></li>
             </ul>
         </nav>
     </header>
@@ -183,37 +183,11 @@
             <div class="top-buttons">
                 <button id = "addDoc">REGISTER NEW DOCTOR</button>
                 <button>APPOINTMENT</button>
-                <button id = "logoutButton">LOG OUT</button>
+                <button id="logoutButton" onclick="if (confirm('Are you sure you want to log out?')) window.location.href = 'logout.php'">LOG OUT</button>
             </div>
             <img src="https://i.pinimg.com/564x/b7/35/5d/b7355df9048bccef66e2c2c2d0283e4c.jpg" alt="Profile Picture">
             <h2 > WELCOME ADMIN !</h2>
         </div>
     </div>
-    <script>
-        // Check if userID exists in session
-        var userID = "<?php echo $_SESSION['userID']; ?>";
-		var userType = "<?php echo $_SESSION['userType']; ?>";
-        
-        // If userID doesn't exist, redirect to login page
-        if (userID === '') {
-            window.location.href = "mainPageForm.html";
-        }
-
-        // Add event listeners after DOM content is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-
-            // Add an event listener to the logout button
-            document.getElementById("logoutButton").addEventListener("click", function() {
-                // Display a confirmation dialog
-                var confirmLogout = confirm("Are you sure you want to log out?");
-                
-                // If user confirms logout
-                if (confirmLogout) {
-                    // Redirect to logout page
-                    window.location.href = "logout.php";
-                }
-            });
-        });
-    </script>
 </body>
 </html>
