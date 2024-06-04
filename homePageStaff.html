@@ -159,6 +159,22 @@
         .top-buttons button:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
+		.header-logout{
+			position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+		}
+		.header-logout img {
+            width: 30px;
+            height: 30px;
+            filter: invert(100%);
+        }
+
+        .header-logout img:hover {
+            filter: brightness(50%);
+        }
     </style>
 </head>
 <body>
@@ -166,13 +182,9 @@
     <header>
         <h1>MEDICHUB</h1>
         <nav>
-            <ul>
-                <li><a href="mainPageForm.html" class="nav-button" id="left-button"><img src="https://uxwing.com/wp-content/themes/uxwing/download/arrow-direction/previous-icon.png" alt="Left"></a></li>
-                <li><a href="homePage.html" id="about-us-link">About Us</a></li>
-                <li><a href="homePage.html" id="services-link">Services</a></li>
-                <li><a href="homePage.html" id="contact-link">Contact</a></li>
-                <li><a href="xxxxxxx" class="nav-button" id="right-button"><img src="https://uxwing.com/wp-content/themes/uxwing/download/arrow-direction/next-icon.png" alt="Right"></a></li>
-            </ul>
+            <div class="header-logout" onclick="if (confirm('Are you sure you want to log out?')) window.location.href = 'logout.php'">
+            <img src="https://cdn-icons-png.flaticon.com/128/3889/3889524.png" alt="Logout">
+			</div>
         </nav>
     </header>
     <div class="container">
@@ -186,7 +198,6 @@
             <div class="top-buttons">
                 <button id="profileButton" onclick="var userID = document.getElementById('userID').value; console.log('userID:', userID); window.location.href = 'profile.php?userType=doctor&userID=' + userID;">MY PROFILE</button>
                 <button id ="apptButton" onclick="window.location.href='AppointmentPage(doc).html'">APPOINTMENT</button>
-                <button id="logoutButton" onclick="if (confirm('Are you sure you want to log out?')) window.location.href = 'logout.php'">LOG OUT</button>
             </div>
             <img src="https://i.pinimg.com/564x/ad/74/57/ad745792a51ec9e39f90111739406f81.jpg" alt="Profile Picture">
             <h2>WELCOME DR!</h2>
