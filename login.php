@@ -1,8 +1,7 @@
 <?php
 session_start();
-var_dump($_SESSION);
-include 'dbconn.php'; // Include database connection file
-
+include 'dbconn.php';
+$pdo = $conn;
 // Get username and password from form
 $userID = $_POST['userID'];
 $password = $_POST['password'];
@@ -10,9 +9,9 @@ $role = $_POST['role'];
 
 // Prepare statement based on the role
 if ($role === 'staff') {
-    $stmt = $pdo->prepare("SELECT * FROM login WHERE userID =? AND userPassword =? AND userType IN ('admin', 'doctor')");
+    $stmt = $pdo->prepare("SELECT * FROM login l INNER JOIN usertype ut ON l.userTypeID = ut.userTypeID WHERE l.userID =? AND l.userPassword =? AND ut.userType IN ('admin', 'doctor')");
 } else {
-    $stmt = $pdo->prepare("SELECT * FROM login WHERE userID =? AND userPassword =? AND userType = 'patient'");
+    $stmt = $pdo->prepare("SELECT * FROM login l INNER JOIN usertype ut ON l.userTypeID = ut.userTypeID WHERE l.userID =? AND l.userPassword =? AND ut.userType = 'patient'");
 }
 $stmt->execute([$userID, $password]);
 
@@ -41,16 +40,21 @@ if ($stmt->rowCount() == 1) {
     // Redirect based on user type
     if ($role === 'staff') {
         if (isset($_SESSION['adminID'])) {
-            header("Location: homePageAdmin.html?userType=admin&adminID=" + adminID); // Redirect to admin dashboard
+            header("Location: homePageAdmin.html?userType=admin&adminID=" . $_SESSION['adminID'] ."&userID=" . $_SESSION['userID']); // Redirect to admin dashboard
         } elseif (isset($_SESSION['doctorID'])) {
-            header("Location: homePageStaff.html?userType=doctor&doctorID=" + doctorID); // Redirect to staff dashboard
+            header("Location: homePageStaff.html?userType=doctor&doctorID=" . $_SESSION['doctorID'] ."&userID=" . $_SESSION['userID']); // Redirect to staff dashboard
         }
     } else {
-        header("Location: patientDashboard.html?userType=patient&patientID= " + patientID); // Redirect to patient dashboard
+        header("Location: patientDashboard.html?userType=patient&patientID= " . $_SESSION['patientID']."&userID=" . $_SESSION['userID']); // Redirect to patient dashboard
     }
 } else {
     // User does not exist, redirect to login page with error message
-    header("Location: mainPageForm.html?error=1");
+    ?>
+    <script>
+        alert("User does not exist");
+        window.location.href = "mainPageForm.html?error=1";
+    </script>
+    <?php
+    exit();
 }
-exit();
 ?>
