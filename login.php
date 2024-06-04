@@ -2,6 +2,7 @@
 session_start();
 include 'dbconn.php';
 $pdo = $conn;
+
 // Get username and password from form
 $userID = $_POST['userID'];
 $password = $_POST['password'];
@@ -18,9 +19,10 @@ $stmt->execute([$userID, $password]);
 // Check if user exists
 if ($stmt->rowCount() == 1) {
     // User exists, set session variable
+    $user = $stmt->fetch();
     $_SESSION['loggedin'] = true;
     $_SESSION['userID'] = $userID;
-    $_SESSION['userType'] = $role;
+    $_SESSION['userType'] = $user['userType'];
 
     // Set specific ID variable based on user type
     if ($role === 'staff') {
@@ -40,12 +42,12 @@ if ($stmt->rowCount() == 1) {
     // Redirect based on user type
     if ($role === 'staff') {
         if (isset($_SESSION['adminID'])) {
-            header("Location: homePageAdmin.html?userType=admin&adminID=" . $_SESSION['adminID'] ."&userID=" . $_SESSION['userID']); // Redirect to admin dashboard
+            header("Location: homePageAdmin.html?userType=admin&adminID=" . $_SESSION['adminID'] . "&userID=" . $_SESSION['userID']); // Redirect to admin dashboard
         } elseif (isset($_SESSION['doctorID'])) {
-            header("Location: homePageStaff.html?userType=doctor&doctorID=" . $_SESSION['doctorID'] ."&userID=" . $_SESSION['userID']); // Redirect to staff dashboard
+            header("Location: homePageStaff.html?userType=doctor&doctorID=" . $_SESSION['doctorID'] . "&userID=" . $_SESSION['userID']); // Redirect to staff dashboard
         }
     } else {
-        header("Location: patientDashboard.html?userType=patient&patientID= " . $_SESSION['patientID']."&userID=" . $_SESSION['userID']); // Redirect to patient dashboard
+        header("Location: patientDashboard.html?userType=patient&patientID=" . $_SESSION['patientID'] . "&userID=" . $_SESSION['userID']); // Redirect to patient dashboard
     }
 } else {
     // User does not exist, redirect to login page with error message
