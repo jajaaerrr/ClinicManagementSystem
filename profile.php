@@ -1,64 +1,92 @@
 <?php
 session_start(); 
-var_dump($_SESSION);
+if (!isset($_SESSION['userID']) || !isset($_SESSION['userType'])) {
+    echo "Session variables not set!";
+    exit;
+}
+//var_dump($_SESSION);
 include("dbconn.php");
 $pdo = $conn;
-echo "User ID: ".$_GET['userID']."<br>";
-echo "User Type: ".$_GET['userType']."<br>";
+//echo "User ID: ".$_SESSION['userID']."<br>";
+//echo "User Type: ".$_SESSION['userType']."<br>";
 
 // Function to get patient information based on patientID
 function getPatientInfo($pdo, $patientID) {
-	try{
-		$stmt = $pdo->prepare("SELECT * FROM patient WHERE patientID = :patientID");
-		$stmt->bindParam(':patientID', $patientID, PDO::PARAM_STR);
-		$stmt->execute();
-		$patient = $stmt->fetch();
-		
-		if($patient){
-		return $patient;
-		} else{
-			return false;
-		}
-	} catch (PDOException $e) {
-		echo "Error: ". $e -> getMessage();
-		return false;
-	}
+    
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM patient WHERE patientID =?");
+        $stmt->bindParam(1, $patientID, PDO::PARAM_STR);
+        $stmt->execute();
+        $patient = $stmt->fetch();
+        
+        if($patient){
+			$patient['userType'] = 'patient';
+            return $patient;
+        } else {
+            echo "Patient with ID $patientID not found in the database!\n"; // Debugging statement
+            return false;
+        }
+    } catch (PDOException $e) {
+        echo "Error: ". $e->getMessage()."\n"; // Debugging statement
+        return false;
+    }
 }
 
 // Function to get doctor information based on doctorID
 function getDoctorInfo($pdo, $doctorID) {
-    $stmt = $pdo->prepare("SELECT * FROM doctor WHERE doctorID = :doctorID");
-    $stmt->bindParam(':doctorID', $doctorID, PDO::PARAM_INT);
-    $stmt->execute();
-    $doctor = $stmt->fetch();
-
-    return $doctor;
+	try{
+		$stmt = $pdo->prepare("SELECT * FROM doctor WHERE doctorID =?");
+		$stmt->bindParam(1, $doctorID, PDO::PARAM_STR);
+		$stmt->execute();
+		$doctor = $stmt->fetch();
+		if($doctor){
+			$doctor['userType'] = 'doctor';
+			return $doctor;
+		} else {
+			echo "Doctor with ID $doctorID not found in the database!\n"; // Debugging statement
+			return false;
+		}
+	}catch (PDOException $e) {
+        echo "Error: ". $e->getMessage()."\n"; // Debugging statement
+        return false;
+	}
+	
 }
 
-if (isset($_GET['userType'])) {
-    $userType = $_GET['userType'];
-    $userID = $_GET['userID'];
+if (isset($_SESSION['userType'])) {
+    $userType = $_SESSION['userType'];
+    $userID = $_SESSION['userID'];
 
     if ($userType === 'patient') {
-        $patient = getPatientInfo($pdo, $userID);
-        if ($patient) {
-            echo "Patient ID: ". $patient['patientID']. "<br>";
-			echo "Patient NRIC: ". $patient['patientNRIC']. "<br>";
-            echo "Patient Name: ". $patient['patientName']. "<br>";
-			echo "Phone Number: ". $patient['phoneNumber']. "<br>";
-            echo "Address: ". $patient['address']. "<br>";
-            echo "Register Date: ". $patient['registerDate']. "<br>";
-        } else {
-            echo "Patient not found!";
-        }
+    $patient = getPatientInfo($pdo, $userID);
+    if ($patient) {
+       ?>
+        <div class="profile-card">
+            <h2>Patient Profile</h2>
+            <p><strong>Patient ID:</strong> <?php echo $patient['patientID'];?></p>
+            <p><strong>Patient NRIC:</strong> <?php echo $patient['patientNRIC'];?></p>
+            <p><strong>Patient Name:</strong> <?php echo $patient['patientName'];?></p>
+            <p><strong>Phone Number:</strong> <?php echo $patient['patientPhoneNo'];?></p>
+            <p><strong>Address:</strong> <?php echo $patient['patientAddress'];?></p>
+            <p><strong>Register Date:</strong> <?php echo $patient['registerDate'];?></p>
+        </div>
+        <?php
+    } else {
+        echo "Patient not found!"; // This message is only shown if the function returns false
+    }
     } elseif ($userType === 'doctor') {
         $doctor = getDoctorInfo($pdo, $userID);
         if ($doctor) {
-            echo "Doctor ID: ". $doctor['doctorID']. "<br>";
-            echo "Doctor Name: ". $doctor['doctorName']. "<br>";
-            echo "Doctor NRIC: ". $doctor['doctorNRIC']. "<br>";
-            echo "Doctor Speciality: ". $doctor['doctorSpeciality']. "<br>";
-            echo "Availability: ". $doctor['availability']. "<br>";
+           ?>
+            <div class="profile-card">
+                <h2>Doctor Profile</h2>
+                <p><strong>Doctor ID:</strong> <?php echo $doctor['doctorID'];?></p>
+                <p><strong>Doctor Name:</strong> <?php echo $doctor['doctorName'];?></p>
+                <p><strong>Doctor NRIC:</strong> <?php echo $doctor['doctorNRIC'];?></p>
+                <p><strong>Doctor Speciality:</strong> <?php echo $doctor['doctorSpeciality'];?></p>
+                <p><strong>Availability:</strong> <?php echo $doctor['availability'];?></p>
+            </div>
+            <?php
         } else {
             echo "Doctor not found!";
         }
