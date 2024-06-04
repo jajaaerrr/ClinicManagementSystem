@@ -1,56 +1,55 @@
 <?php
-include 'dbconn.php'; // Ensure this file exists and the path is correct
+include 'dbconn.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $patientNRIC = $_POST['patientNRIC'];
-    $patientName = $_POST['fullName']; // Corrected name
-    $patientPhoneNo = $_POST['phoneNumber']; // Corrected name
-    $patientAddress = $_POST['address']; // Corrected name
+    $patientName = $_POST['fullName']; 
+    $patientPhoneNo = $_POST['phoneNumber']; 
+    $patientAddress = $_POST['address'];
     $userPassword = $_POST['password'];
 
     // Hash the password
-    $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
+    //$hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
 
     try {
         // Begin a transaction
-        $pdo->beginTransaction();
+        $conn->beginTransaction();
 
         // Get the maximum patientID and increment it
         $sql = "SELECT MAX(CAST(SUBSTRING(patientID, 2) AS UNSIGNED)) AS maxID FROM patient";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $maxID = $result ? $result['maxID'] : 0;
-        $newPatientID = 'P' . str_pad($maxID + 1, 4, '0', STR_PAD_LEFT);
+        $maxID = $result? $result['maxID'] : 0;
+        $newPatientID = 'P'. str_pad($maxID + 1, 4, '0', STR_PAD_LEFT);
 
         // Insert into patient table
-        $sql = "INSERT INTO patient (patientID, patientNRIC, patientName, patientPhoneNo, patientAddress, registerDate) 
-                VALUES (?, ?, ?, ?, ?, CURDATE())";
-        $stmt = $pdo->prepare($sql);
+        $sql = "INSERT INTO patient (patientID, patientNRIC, patientName, patientPhoneNo, patientAddress, registerDate)  VALUES (?,?,?,?,?, CURDATE())";
+        $stmt = $conn->prepare($sql);
         $stmt->execute([$newPatientID, $patientNRIC, $patientName, $patientPhoneNo, $patientAddress]);
 
         // Insert into usertype table
-        $sql = "INSERT INTO usertype (userID, userType) VALUES (?, 'patient')";
-        $stmt = $pdo->prepare($sql);
+        $sql = "INSERT INTO usertype (userTypeID, userType) VALUES (?, 'patient')";
+        $stmt = $conn->prepare($sql);
         $stmt->execute([$newPatientID]);
 
         // Insert into login table
-        $sql = "INSERT INTO login (userID, userPassword) VALUES (?, ?)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$newPatientID, $hashedPassword]);
+        $sql = "INSERT INTO login (userID, userPassword, userTypeID) VALUES (?,?,?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$newPatientID, $userPassword, $newPatientID]);
 
         // Commit the transaction
-        $pdo->commit();
+        $conn->commit();
 
-        // Store the new patient ID in localStorage and redirect
+        // Display the new patient ID in an alert box and redirect
         echo "<script>
-                localStorage.setItem('patientID', '$newPatientID');
-                window.location.href = 'patientRegistration.html';
+                alert('Your patient ID is: $newPatientID. Use this to login.');
+                window.location.href = 'mainPageForm.html';
               </script>";
     } catch (Exception $e) {
         // Rollback the transaction if something went wrong
-        $pdo->rollBack();
-        die("Error: " . $e->getMessage());
+        $conn->rollBack();
+        die("Error: ". $e->getMessage());
     }
 }
 ?>
