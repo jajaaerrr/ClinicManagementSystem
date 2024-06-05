@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updating Booked Appointment</title>
+    <script>
+        function validateUpdatedDate() {
+            var inputDate = document.getElementById("appointmentDate").value;
+            var today = new Date();
+            var input = new Date(inputDate);
+            
+            // Only allow dates after today
+            today.setHours(0, 0, 0, 0);
+            if (input <= today || input == today) {
+                alert("Please select a valid appointment date.");
+                return false;
+            }
+            return true;
+        }
+
+        function confirmUpdatedBooking() {
+            if (validateDate()) {
+                return confirm("Do you want to confirm this updated appointment?");
+            }
+            return false;
+        }
+
+        function cancelAppointment() {
+            if (confirm("Are you sure you want to cancel this appointment?")) {
+                // Redirect to cancel_appointment.php
+                window.location.href = "cancel_appointment.php";
+            }
+        }
+    </script>
+</head>
+<body>
+   
+    <h2>Updating Booked Appointment Details</h2>
+
+    <!---canceling appointment--->
+    <?php
+    // Include database connection
+    include("dbconn.php");
+
+    // Delete appointment from the database
+    $sql = "DELETE FROM appointment WHERE appointmentID = ?";
+    $stmt = $dbconn->prepare($sql);
+    $stmt->bind_param("i", $appointmentID);
+
+    // Assuming you have stored the appointmentID in a session or a hidden input field
+    $appointmentID = $_SESSION['appointmentID']; // or $_POST['appointmentID'];
+
+    // Execute the deletion
+    if ($stmt->execute()) {
+        echo "Appointment cancelled successfully.";
+    } else {
+        echo "Error cancelling appointment: " . $dbconn->error;
+    }
+
+    // Close statement
+    $stmt->close();
+  
+?>
+
+
+    <form action="process_appointment.php" method="post" onsubmit="return confirmBooking()">
+        <label for="appointmentDate">Choose new Appointment Date (yyyy-mm-dd):</label>
+        <input type="date" id="appointmentDate" name="appointmentDate" required><br><br>
+        
+        <label for="timeSlot">Choose a Time Slot:</label>
+        <select id="timeSlot" name="timeSlot" required>
+            <option value="0800-0900">0800-0900</option>
+            <option value="0900-1000">0900-1000</option>
+            <option value="1000-1100">1000-1100</option>
+            <option value="1100-1200">1100-1200</option>
+            <option value="1400-1500">1400-1500</option>
+            <option value="1500-1600">1500-1600</option>
+            <option value="1600-1700">1600-1700</option>
+            <option value="1700-1800">1700-1800</option>
+        </select><br><br>
+        
+        <input type="submit" value="Confirm">
+        <button type="button" onclick="cancelAppointment()">Cancel Appointment</button>
+    </form>
+</body>
+</html>

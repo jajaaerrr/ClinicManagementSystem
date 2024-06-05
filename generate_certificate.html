@@ -1,0 +1,120 @@
+<?php
+session_start();
+echo "Session ID: " . session_id() . "<br>"; // Debugging session ID
+include("dbconn.php");
+
+$appointmentID = $_SESSION['appointmentID'];
+$doctorID = $_SESSION['doctorID'];
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if appointmentID and doctorID are set in the session
+if (!isset($_SESSION['appointmentID']) || !isset($_SESSION['doctorID'])) {
+    die('Appointment ID or Doctor ID not set in session.');
+}
+
+// Retrieve appointment data
+$sql = "SELECT a.appointmentID, a.diagnosis AS reason, a.appointmentDate AS mcDate,
+               p.patientName, p.patientNRIC, d.doctorName
+        FROM appointments a
+        JOIN patients p ON a.patientID = p.id
+        JOIN doctors d ON d.doctorID = ?
+        WHERE a.appointmentID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $doctorID, $appointmentID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    $reason = $row['reason'];
+    $patientName = $row['patientName'];
+    $patientNRIC = $row['patientNRIC'];
+    $doctorName = $row['doctorName'];
+    $mcDate = $row['mcDate'];
+} else {
+    die("No record found for the given appointment ID.");
+}
+
+// Fetch the latest mcSerialNumber
+$sql = "SELECT mcSerialNumber FROM medicalcertificate ORDER BY mcSerialNumber DESC LIMIT 1";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $latestMcSerialNumber = $row['mcSerialNumber'];
+    
+    // Extract the numeric part and increment it to generate a new mcSerialNumber
+    $numericPart = (int)substr($latestMcSerialNumber, 2);
+    $newNumericPart = $numericPart + 1;
+    
+    // Generate new mcSerialNumber
+    $newMcSerialNumber = 'MC' . str_pad($newNumericPart, 4, '0', STR_PAD_LEFT);
+} else {
+    // If no mcSerialNumber found, generate a new one
+    $newMcSerialNumber = 'MC0001';
+}
+
+// Get the duration from the POST request and validate it
+$duration = isset($_POST['duration']) ? (int)$_POST['duration'] : 0;
+if ($duration < 1) {
+    die("Duration must be at least 1 day.");
+}
+
+// Insert data into medicalcertificate table
+$sql = "INSERT INTO medicalcertificate (mcSerialNumber, appointmentID, reason, patientName, patientNRIC, doctorName, mcDate, duration)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sissssi", $newMcSerialNumber, $appointmentID, $reason, $patientName, $patientNRIC, $doctorName, $mcDate, $duration);
+
+if ($stmt->execute()) {
+    echo "Medical certificate generated successfully!<br><br>";
+} else {
+    echo "Error: " . $stmt->error;
+}
+
+// Close the statement and connection
+$stmt->close();
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Certificate</title>
+    <style>
+        .certificate {
+            border: 1px solid #000;
+            padding: 20px;
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .certificate h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <h2>Medical Certificate</h2>
+        <form method="post" action="">
+            <p><strong>Medical Certificate ID:</strong> <?php echo $newMcSerialNumber; ?></p>
+            <p><strong>Appointment ID:</strong> <?php echo $appointmentID; ?></p>
+            <p><strong>Reason:</strong> <?php echo $reason; ?></p>
+            <p><strong>Patient Name:</strong> <?php echo $patientName; ?></p>
+            <p><strong>Patient NRIC:</strong> <?php echo $patientNRIC; ?></p>
+            <p><strong>Doctor Name:</strong> <?php echo $doctorName; ?></p>
+            <p><strong>Date:</strong> <?php echo $mcDate; ?></p>
+            <p>
+                <strong>Duration (days):</strong> 
+                <input type="number" name="duration" min="1" required>
+            </p>
+            <input type="submit" value="Generate Medical Certificate">
+        </form>
+    </div>
+</body>
+</html>
