@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking</title>
+    <script>
+        function validateDate() {
+            var inputDate = document.getElementById("appointmentDate").value;
+            var today = new Date();
+            var input = new Date(inputDate);
+            
+            // Only allow dates after today
+            today.setHours(0, 0, 0, 0);
+            if (input <= today) {
+                alert("Please select a valid appointment date.");
+                return false;
+            }
+            return true;
+        }
+
+        function confirmBooking() {
+            if (validateDate()) {
+                return confirm("Do you want to confirm this appointment?");
+            }
+            return false;
+        }
+    </script>
+</head>
+<body>
+   
+    <h2>Book an Appointment</h2>
+
+   <!---include appointmentBookData.php--->
+    <?php
+		session_start();
+		include("dbconn.php");
+		
+		// to check if patientID is set in the session
+		if (!isset($_SESSION['patientID'])){
+			die('Patient ID is not set here :0 ');
+		}
+		
+		//retrieve patientID from prev session
+		$patientID = $_SESSION['patientID'];
+
+		$sql = "SELECT patientName FROM patient";
+		$query = mysqli_query($dbconn,$sql) or die ("!Error: ".mysqli_error($dbconn));
+	
+		//fetching latest appointmentID to generate new one
+		$sql = "SELECT appointmentID FROM appointment ORDER BY appointmentID DESC LIMIT 1";
+		$result = $conn->query($sql);
+		
+		if($result->num_rows > 0){
+		
+			$row = $result->fetch_assoc();
+			$latestAppointmentID = $row['appointmentID'];
+			
+			// extracting the numeric part and increment it to generate new appointmentID :0
+			$numericPart = (int)substr($latestAppointmentID, 3);
+			$newNumericPart = $numericPart + 1;
+			
+			// generating new appointmentID ;0
+			$newAppointmentID = 'APP'.str_pad($newNumericPart, 4,' 0', STR_PAD_LEFT );
+			
+		}else {
+			// if no appointmentID found, generate a new one
+			$newAppointmentID = 'APP0001';
+		}
+		
+		// fetching the patient data based on patientID
+		$sql = "SELECT patientName FROM patient WHERE id = ? LIMIT 1";
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("i",$patientID);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		
+		//output 
+		
+		if($row=$result->fetch_assoc()) {
+			echo "Appointment ID: ".$newAppointmentID.<br>";
+			echo "Pateint ID: ".$row["id"].<br>";
+			echo "Pateint ID: ".$row["name"].<br>";
+		} else{
+			echo "No data found for ". $patientID;
+		}
+		
+		$stmt->close();
+?>
+
+   
+    <form action="process_appointment.php" method="post" onsubmit="return confirmBooking()">
+        <label for="appointmentDate">Choose an Appointment Date (yyyy-mm-dd):</label>
+        <input type="date" id="appointmentDate" name="appointmentDate" required><br><br>
+        
+        <label for="timeSlot">Choose a Time Slot:</label>
+        <select id="timeSlot" name="timeSlot" required>
+            <option value="0800-0900">0800-0900</option>
+            <option value="0900-1000">0900-1000</option>
+            <option value="1000-1100">1000-1100</option>
+            <option value="1100-1200">1100-1200</option>
+            <option value="1400-1500">1400-1500</option>
+            <option value="1500-1600">1500-1600</option>
+            <option value="1600-1700">1600-1700</option>
+            <option value="1700-1800">1700-1800</option>
+        </select><br><br>
+        
+        <input type="submit" value="Confirm">
+    </form>
+</body>
+</html>
